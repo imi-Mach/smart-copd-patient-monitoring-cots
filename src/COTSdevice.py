@@ -5,28 +5,42 @@ HR = 95
 SpO2 = 92
 FEV1 = 31
 
-def button_callback(channel):
-    print("Button was pressed!")
-    FEV1 = 29
+inpin = 15
+outpin = 18
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-GPIO.setup(18,GPIO.OUT)
-GPIO.setup(15,GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(inpin,GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(outpin,GPIO.OUT)
+
+button='up'
+light='off'
 
 try:
+    while True:
+        if (button=='up' and light=='off'):
+            # wait for button press before changing anything
+            if not GPIO.input(inpin):
+                GPIO.output(outpin, 1)
+                button='down'; 
+                light='on'
 
-    print("LED on")
-    GPIO.output(18,GPIO.HIGH)    
+        elif (button=='down' and light=='on'):
+            # stay in this state until button released
+            if GPIO.input(inpin):
+                button='up'
 
-    GPIO.add_event_detect(15,GPIO.RISING,callback=button_callback)
+        elif (button=='up' and light=='on'):
+            if not GPIO.input(inpin):
+                GPIO.output(outpin, 0)
+                button='down'
+                light='off'
 
-    end_message = input("Press enter to quit\n")
-
-
-    print("LED off")
-    GPIO.output(18,GPIO.LOW)
+        elif (button=='down' and light=='off'):
+            if GPIO.input(inpin):
+                button='up'
+        time.sleep(0.1)
 
 
 finally:

@@ -30,6 +30,9 @@ try:
             # stay in this state until button released
             if GPIO.input(inpin):
                 button='up'
+                HR = 90
+                SpO2 = 90
+                FEV1 = 25
 
         elif (button=='up' and light=='on'):
             if not GPIO.input(inpin):

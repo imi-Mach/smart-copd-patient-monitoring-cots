@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+from datetime import datetime
 
 HR = 95
 SpO2 = 92
@@ -33,6 +34,11 @@ try:
                 HR = 90
                 SpO2 = 90
                 FEV1 = 25
+                log = open("/home/pi/Desktop/patient_data_"+datetime.now().strftime("%m_%d_%Y")+".txt", "w")
+                log.write("HR,SpO2,FEV1\n")
+                log.write("{:n},{:n},{:n}\n".format(HR,SpO2,FEV1))
+                log.close() 
+
 
         elif (button=='up' and light=='on'):
             if not GPIO.input(inpin):
@@ -48,10 +54,5 @@ try:
 
 finally:
     GPIO.cleanup()
-
-    log = open("../data/data.txt", "w")
-    log.write("HR,SpO2,FEV1\n")
-    log.write("{:n},{:n},{:n}\n".format(HR,SpO2,FEV1))
-    log.close() 
 
 print("This file terminated!")
